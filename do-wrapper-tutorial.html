@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>DO and do-wrapper</title>
+     <!-- link to style sheet -->
+    <link rel="stylesheet" href="how-to.css" type="text/css">
+</head>
+<body>
+    <legend class="topLabel"> do-wrapper and DigitalOcean API </legend>
+            
+    <h3>A tutorial on how to use the do-wrapper library with DigitalOcean API v2</h3>
+    <h2>by Kara Franco</h2>
+
+    <p>The following is a detailed tutorial about using the do-wrapper library with the DigitalOcean API v2. The DigitalOcean API <a href="https://developers.digitalocean.com/documentation/v2/#introduction"> documentaion</a> has example usage in cURL, Ruby and Go, however does not provide code examples using Javascript nor the Node.js module, do-wrapper. In this tutorial, we will demonstrate how to interact with your DigitalOcean droplets with do-wrapper. But first let’s get familiar with both of the tools.</p>
+    <br>
+    <h3>About DigitalOcean and their API</h3>
+
+    <p><a href="https://www.digitalocean.com/"> DigitalOcean</a> is a fast-growing cloud infrastructure provider that offers users infrastructure as a service (IaaS). Their cloud hosting services provide an easy to use control panel and API for developers to start up and manage droplets. A droplet is a SSD cloud server that can be created in the <a href="https://www.digitalocean.com/community/tutorials/how-to-create-your-first-digitalocean-droplet-virtual-server"> control panel</a> or through their API. This tutorial will be focusing on managing our droplets with the API, however I encourage everyone to explore DigitalOcean’s <a href="https://www.digitalocean.com/features/control-panel/"> control panel</a> and their <a href="https://www.digitalocean.com/help/"> cloud services</a>.</p>
+    <p>DigitalOcean's <a href="https://developers.digitalocean.com/documentation/v2/#introduction"> API</a> allows developers to manage their droplets and resources with HTTP requests. You can make any action with the API that you can make in the control panel (with the exception of personal access token actions). Before moving on, follow this guide on getting started with the <a href="https://www.digitalocean.com/community/tutorials/how-to-use-the-digitalocean-api-v2"> API</a> (note: make sure you select the Write scope for your token, that way you can manage your droplets and follow this tutorial).</p>
+    <br>
+    <h3>About do-wrapper</h3>
+
+    <p>As said before, the DigitalOcean API v2 documentation has usage examples in cURL, Go and Ruby. As someone who uses Node.js, I wanted to find usage examples in Javascript. Out of the many <a href="https://developers.digitalocean.com/libraries/"> libraries</a> available to use the API, <a href="https://github.com/matt-major/do-wrapper"> do-wrapper</a> provides developers with a Javascript interface. do-wrapper was created to provide a Node.js wrapper to the DigitalOcean API, allowing a developer to write programs that create, manage and destroy droplets for their Node.js projects. The do-wrapper <a href="https://github.com/matt-major/do-wrapper/blob/master/docs/do-wrapper.md"> documentation</a> gives brief explanations of the library methods, however, falls short to provide example code snippets. The only usage example the library provides is the image below:</p>
+    <center><img src="example-usage.png" width="620" height="360" > </center>
+    <p>As we can see from the documentation, there are many methods with no usage examples, including the most basic droplet interactions. The remainder of this tutorial will fill in these gaps, providing a quick reference on how to manage your droplets.</p>
+    <br>
+    <h3>Using do-wrapper to interact with your droplets</h3>
+    <p>To get started with do-wrapper you will need to follow the instructions to install the library through <a href="https://www.npmjs.com/"> npm</a>. Use this <a href="https://github.com/matt-major/do-wrapper"> link</a> and follow the install instructions then return here to explore the usage examples below:</p>
+    <br>
+    <h3>Creating a droplet</h3>
+    <center><img src="Usage-1.png" width="700" height="200" > </center>
+    <p><strong>dropletsCreate()</strong>method is used to create new droplets on the developer’s account. This method sends a POST request with the configuration attributes that the droplet will have. To learn more about the attributes visit the <a href="https://www.digitalocean.com/community/tutorials/how-to-create-your-first-digitalocean-droplet-virtual-server"> droplet</a> tutorial. As we see below, the variable <strong>new_droplet</strong> has the information to create our new droplet; which is sent in the request body.</p>
+    <script src="https://gist.github.com/kara-franco/31617646136e384819ca95567b662493.js"></script>
+    <p>In the usage example above, we set up a new copy of do-wrapper and include our API token (note: never let anyone see your API token, in this example I used “your_api_key” for security reasons). We then set the new droplet information to <strong>new_droplet</strong>, and call the <strong>dropletsCreate()</strong> with the new droplet information. As we see below, the response from the request is a JSON object with a key named “droplet” containing the information about your new droplet (once again, for security reasons, I replaced my private information with dummy values).</p>
+    <script src="https://gist.github.com/kara-franco/e5ad2e3c97a2ce51836d8a510ec12ba3.js"></script>
+    <br>
+    <h3>Getting a list of droplets</h3>
+    <center><img src="Usage-2.png" width="700" height="200" > </center>
+    <p><strong>dropletsGetAll()</strong> method is used to retrieve a list of all the droplets on the developer’s account. A GET request is sent with a query that has extra details about the request. As we see below, <strong>query</strong> has the information about results per page, page and the option to include all droplets.</p>
+    <script src="https://gist.github.com/kara-franco/b521120bd6656688bb8bedab6ae74456.js"></script>
+    <p>In the usage example above, the query is set to the variable, <strong>query</strong>, with the information we want. The query by default is set to: <strong>per_page</strong> = your page size, <strong>page</strong> = 1 and <strong>includeAll</strong> = false. The response is a JSON object that lists out the droplet(s) on the account and their attributes, the result will look similar to the <strong>dropletsCreate()</strong> method results.</p>
+    <br>
+    <h3>Getting a single droplet</h3>
+    <center><img src="Usage-3.png" width="700" height="200" > </center>
+    <p><strong>dropletsGetById()</strong> method is used to get the information on a single droplet in the developer’s account. A GET request is made with the droplet ID (note: below, I used a dummy droplet ID). It is best to cut and paste your droplet ID, since there is a great chance for typos. The response is a JSON object that contains that specific droplet’s attributes, similar to the result from <strong>dropletsCreate().</strong></p>
+    <script src="https://gist.github.com/kara-franco/91c803f188972f323e437a8e02b8a221.js"></script>
+    <br>
+    <h3>Deleting a droplet</h3>
+    <center><img src="Usage-4.png" width="700" height="200" > </center>
+    <p><strong>dropletsDelete()</strong> method is used to delete a droplet from the developer’s account by the droplet ID. A DELETE request is made with the droplet ID, in the function we include the ID of the droplet to be deleted. There is no response body sent after this action, however there is response code returned to the console, which should be <strong>204 No Content</strong>, which means that it was successful and the droplet no longer exists.</p>
+    <script src="https://gist.github.com/kara-franco/6bd257c7f68939f13ec4e904deca967c.js"></script>
+    <br>
+    <h3>Larger scope implementations</h3>
+    <p>The above are basic usage examples of the do-wrapper library’s interactions with DigitalOcean’s API. We have performed the GET, POST and DELETE requests to the API; to create and manage our droplets. As a developer, you will need to know these droplet actions, along with others, to scale your droplets to fit your needs. Below is an example case that I created to illustrate the use of this library and API:</p>
+    <script src="https://gist.github.com/kara-franco/1ba9fce06fa3bf7579b4d10a61e6c9f8.js"></script>
+    <p>In this example implementation, we can assume that the developer is managing an application that may need to scale up at some point in time. Let’s imagine that this particular droplet has a mongoDB running on it, that takes in customer data. Let's say that we have a boom of growth leading to an increase in customer data and we need to change all of our droplet sizes to 40GB. We can have a javascript that checks the size of a given droplet to determine if it needs resizing. We can use the <strong>dropletsGetById()</strong> method to check the disk size of that particular droplet. The result of this size check can then trigger another javascript, below, that resizes the droplet disk to 40GB. </p>
+    <script src="https://gist.github.com/kara-franco/f368199db24f74fe5bd734d8a56cd8c0.js"></script>
+    <p>From this simple demonstration, we can see that the do-wrapper library can be of great use when automating your application’s scalability. In this tutorial, we have introduced the DigitalOcean API and do-wrapper tools, and illustrated several examples. There are many other actions that you can perform with these tools. To take the next steps, explore the DigitalOcean API documentation to fully understand the API and also learn more <a href="https://www.digitalocean.com/community/tutorials/how-to-scale-your-infrastructure-with-digitalocean"> general information</a> about how to automate the scaling of your web applications. </p>
+</body>
+</html>
